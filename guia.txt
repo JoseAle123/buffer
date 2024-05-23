@@ -1,0 +1,19 @@
+Ejemplo
+
+Imaginemos un sistema de bases de datos con un buffer que puede almacenar tres bloques de datos. Los bloques actualmente en el buffer son A, B y C.
+
+    Solicitud de Bloque D: Un programa solicita el bloque D, que no está en el buffer.
+        El gerente de buffer debe hacer espacio para el bloque D. Supongamos que usa la política LRU y decide 
+        expulsar el bloque A, que fue el menos recientemente usado.
+        El bloque A se escribe de nuevo en el disco (si ha sido modificado) y se elimina del buffer.
+        El bloque D se lee del disco y se coloca en el buffer.
+        La dirección del bloque D en la memoria principal se pasa al programa solicitante.
+
+    Operaciones de Pin y Unpin:
+        Otro programa necesita leer el bloque B. Ejecuta una operación de pin en B, asegurando que no se expulse mientras se lee.
+        Mientras B está fijado, otro programa solicita el bloque E. Se debe expulsar un bloque, pero B no puede ser expulsado porque está fijado.
+        Supongamos que el bloque C es el menos recientemente usado ahora y se expulsa para hacer espacio para E.
+        Después de que el primer programa termina de leer B, ejecuta una operación de unpin, permitiendo que B sea expulsado en el futuro si es necesario.
+    
+
+    si un bloque no se ha modifica de elimina , de lo contrario se guarda en el disco.
