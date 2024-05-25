@@ -1,0 +1,17 @@
+En resumen:
+
+    "Last Used" se incrementa cada vez que se accede a una página en el buffer pool.
+    "Dirty Bit" se incrementa cuando se realiza una escritura en una página en el buffer pool.
+
+
+    "Last Used": Este valor se decrementa cuando una página se mueve al final de la cola (queue) de acuerdo con la
+     estrategia de reemplazo LRU (Least Recently Used). Esto ocurre cuando una página es accedida y su contador de 
+     "Pin Count" es igual a 0. En ese momento, la página se considera como utilizada recientemente y se actualiza su 
+     "Last Used" con el tiempo actual. Cuando se actualiza el "Last Used", puede considerarse que se "decrementa" en
+      términos de tiempo, ya que representa una antigüedad relativa.
+
+    "Dirty Bit": Este bit se decrementa cuando una página se escribe de nuevo en el disco y se establece en 0 una vez 
+    que la escritura se completa con éxito. Esto ocurre después de que se han realizado las operaciones de escritura 
+    necesarias para asegurar la persistencia de los datos. Una vez que se ha completado la escritura, el "Dirty Bit" 
+    se restablece a 0, indicando que la página en la memoria coincide con la versión en disco y ya no necesita ser
+     escrita nuevamente hasta que se modifique.

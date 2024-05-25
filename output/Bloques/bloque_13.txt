@@ -1,0 +1,3 @@
+38,0,3,"Cann, Mr. Ernest Charles",male,21,0,0,A./5. 2152,08.05,,S
+39,0,3,"Vander Planke, Miss. Augusta Maria",female,18,2,0,345764,18,,S
+40,1,3,"Nicola-Yarred, Miss. Jamila",female,14,1,0,2651,11.2417,,C
