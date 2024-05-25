@@ -259,37 +259,29 @@ public:
             archivo_a_numero[nombre_archivo] = numPagina;
         }
 
-        // Cargar la página en el buffer pool
-        bufferPool.cargarPaginaAlFrame(frame_num, nombre_archivo);
+        // Verificar si el frame está vacío antes de cargar la página
+        if (bufferPool.obtenerFrame(frame_num)->estaVacio()) {
+            // Cargar la página en el buffer pool
+            bufferPool.cargarPaginaAlFrame(frame_num, nombre_archivo);
 
-        // Actualizar la tabla de páginas
-        pageTable.actualizarDatos(numPagina, frame_num);
-    }
-
-    void cargarPaginaEnBufferManager(int numPagina, const std::string& nombre_archivo) {
-        // Verificar si la página ya está en el buffer pool
-        if (pageTable.verificarExistenciaDePagina(numPagina)) {
-            // Obtener el ID del frame donde está la página
-            int frameId = pageTable.getNumFrame(numPagina);
-            // Incrementar el contador de pines de la página
-            pageTable.aumentarPinCount(numPagina);
-            std::cout << "La página " << numPagina << " ya está en el buffer manager, en el frame " << frameId << "." << std::endl;
+            // Actualizar la tabla de páginas
+            pageTable.actualizarDatos(numPagina, frame_num);
         } else {
-            // Buscar un frame vacío en el buffer pool
-            size_t frameId = bufferPool.buscarFrameVacio();
-            // Si se encontró un frame vacío
-            if (frameId < bufferPool.getNumFrames()) {
-                // Cargar la página en el frame vacío
-                bufferPool.obtenerFrame(frameId)->agregarPagina(nombre_archivo);
-                // Actualizar la tabla de páginas con la nueva página y el frame asignado
-                pageTable.actualizarDatos(numPagina, frameId);
-                std::cout << "Página " << numPagina << " cargada en el buffer manager, en el frame " << frameId << "." << std::endl;
-            } else {
-                // Si no hay frames vacíos
-                std::cout << "No hay espacio disponible en el buffer manager para la página " << numPagina << "." << std::endl;
-            }
+            std::cout << "El frame " << frame_num << " ya está ocupado. No se puede cargar la página." << std::endl;
         }
     }
+
+    void consultarPagina(int numPagina) {
+        // Verificar si la página existe en la tabla de páginas
+        if (pageTable.verificarExistenciaDePagina(numPagina)) {
+            // Incrementar el contador de PinCount
+            pageTable.aumentarPinCount(numPagina);
+            std::cout << "El contador de PinCount para la página " << numPagina << " ha sido incrementado." << std::endl;
+        } else {
+            std::cout << "La página " << numPagina << " no se encuentra en la tabla de páginas." << std::endl;
+        }
+    }
+
 
     void mostrarContenidoFrame(int numFrame) {
         bufferPool.mostrarContenidoFrame(numFrame);
@@ -309,7 +301,7 @@ int main() {
         std::cout << "\nMenu:\n";
         std::cout << "1. Crear BufferPool\n";
         std::cout << "2. Insertar pagina en BufferPool\n";
-        std::cout << "3. Insertar pagina en BufferManager\n";
+        std::cout << "3. Consultar página en BufferPool\n";
         std::cout << "4. Mostrar contenido de un frame\n";
         std::cout << "5. Mostrar tabla de páginas\n";
         std::cout << "6. Salir\n";
@@ -339,20 +331,14 @@ int main() {
                 }
                 break;
             }
+
             case 3: {
-                if (!bufferManager) {
-                    std::cout << "Primero debe crear el BufferPool." << std::endl;
-                } else {
-                    int numPagina;
-                    std::string nombre_archivo;
-                    std::cout << "Ingrese el número de página: ";
-                    std::cin >> numPagina;
-                    std::cout << "Ingrese el nombre del archivo: ";
-                    std::cin >> nombre_archivo;
-                    bufferManager->cargarPaginaEnBufferManager(numPagina, nombre_archivo);
-                }
+                int pagina;
+                cout << "ingrese numero de pagina: "; cin >> pagina;
+                bufferManager->consultarPagina(pagina);
                 break;
             }
+            
             case 4: {
                 if (!bufferManager) {
                     std::cout << "Primero debe crear el BufferPool." << std::endl;
